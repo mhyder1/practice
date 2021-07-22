@@ -15,6 +15,7 @@ function App() {
     setCount(count - 1)
   }
 
+  const number = 5
   return (
     <main>
       <Header colors={colors}/>
