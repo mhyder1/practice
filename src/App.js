@@ -1,30 +1,39 @@
-import Header from './Header'
-import Footer from './Footer'
-import { useState } from 'react'
+import { useEffect, useState, Fragment } from 'react'
+import Comments from './Comments'
 function App() {
-  const [name, setName] = useState('Jeff')
-  const [age, setAge] = useState(20)
-  const [colors, setColors] = useState(['red', 'blue', 'green', 'yellow'])
-  const [count, setCount] = useState(0)
+  const [posts, setPosts] = useState([])
+  const [postIndex, setPostIndex] = useState(0)
+  useEffect(() => {
+    const url = 'https://jsonplaceholder.typicode.com/posts'
+    fetch(url)
+    .then(res => res.json())
+    .then(data => setPosts(data))
+    .catch(e => console.log(e))
+  },[])
 
-  const increment = () => {
-    setCount(count + 1)
+  const handleClick = (index) => {
+    setPostIndex(index)
   }
-
-  const decrement = () => {
-    setCount(count - 1)
-  }
-
   return (
     <main>
-      <Header colors={colors}/>
-      <h2>{count}</h2>
-      <br />
-      <button onClick={increment}>increment</button>
-      <button onClick={decrement}>decrement</button>
-      <Footer userName={name} age={age} setName={setName}/>
+      {
+        posts.map((post, index) => (
+          <Fragment key={post.id}>
+            <h1 onClick={() => handleClick(index)} style={{cursor: 'pointer'}}>{post.id} {post.title}</h1>
+            <p>{post.body}</p>
+            {index === postIndex && <Comments postIndex={postIndex} />}
+            <hr />
+          </Fragment>
+        ))
+      }
     </main>
   );
 }
 
 export default App;
+
+/**
+ * Get posts from api
+ * diplay posts on screen
+ * when user clicks on post title, comments are displayed
+ */
